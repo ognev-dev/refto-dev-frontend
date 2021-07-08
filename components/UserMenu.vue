@@ -1,28 +1,30 @@
 <template>
   <div id="userMenu">
-    <div v-if="!auth">
+    <template v-if="!auth">
       <a-button type="primary" size="large" icon="github" :href="$config.githubAuthAddr">
         Connect
       </a-button>
-    </div>
-    <div v-else>
-
+    </template>
+    <template v-else>
       <a-dropdown :trigger="['click']">
         <a id="userMenuHeader">
-          <a-avatar :src="this.auth.user.avatar_url" :size="64" />
-          <span id="userMenuUsername"><a-icon type="github" /> {{this.auth.user.login}} <a-icon type="down" /></span>
+          <span id="userMenuUsername"> {{this.auth.user.login}} <a-icon type="down" /></span>
+          <a-avatar :src="this.auth.user.avatar_url"  shape="square" :size="64"/>
         </a>
         <a-menu slot="overlay">
-          <a-menu-item key="0">
+          <a-menu-item key="0" class="userMenuElement">
             <NuxtLink to="/pages/collections"><a-icon type="unordered-list" /> My collections</NuxtLink>
           </a-menu-item>
+          <a-menu-item key="1" class="userMenuElement">
+            <NuxtLink to="/pages/repositories"><a-icon type="unordered-list" /> My repositories</NuxtLink>
+          </a-menu-item>
           <a-menu-divider />
-          <a-menu-item key="3" @click="this.logout">
+          <a-menu-item key="3" @click="this.logout"  class="userMenuElement">
             <a-icon type="logout" /> Logout
           </a-menu-item>
         </a-menu>
       </a-dropdown>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -53,6 +55,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  .ant-avatar-square {
+    border-radius: 0;
+  }
+
+  .userMenuElement {
+    font-size: 14px;
+    padding: 10px 20px;
   }
 
   #userMenuHeader {
@@ -71,6 +83,5 @@
       font-size: 14px;
     }
   }
-
 
 </style>

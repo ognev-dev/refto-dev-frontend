@@ -163,7 +163,7 @@
           <a-col :span="24">
             <div v-if="this.data.length < totalCount" style="text-align: center">
               <a-button @click="loadMore()" type="primary" size="large" :loading="this.loading" shape="round"> Load
-                more...
+                ant-card-extra...
               </a-button>
             </div>
           </a-col>
@@ -709,33 +709,7 @@
     height: initial;
   }
 
-  body {
-    font-family: 'Roboto', sans-serif;
-  }
 
-  .ant-card {
-    box-shadow: none;
-    border: none;
-    margin-bottom: 20px;
-    padding-bottom: 2px;
-    border-radius: 5px;
-  }
-
-  .ant-card:hover {
-    box-shadow: inset 0 0 0 2px #168be5, 0 0 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .ant-card-head {
-    border-bottom: none;
-    font-weight: 300;
-    font-size: 22px;
-  }
-
-  .ant-card-body {
-    padding-top: 0;
-    padding-bottom: 0;
-    font-size: 120%;
-  }
 
   #intro {
     padding: 20px;
@@ -783,20 +757,7 @@
     padding: 0 7px;
   }
 
-  .ant-card-actions > li {
-    width: auto;
 
-  }
-
-  .ant-card-actions {
-    margin: 2px;
-    text-align: center;
-  }
-
-  .ant-card-actions li {
-    margin: 2px;
-    text-align: center;
-  }
 
   #notContentPic {
     float: left;

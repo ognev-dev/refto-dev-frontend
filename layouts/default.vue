@@ -53,3 +53,81 @@
 
     }
 </script>
+
+<style>
+  body {
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 300;
+  }
+
+  .ant-card {
+    box-shadow: none;
+    border: none;
+    margin-bottom: 20px;
+    padding-bottom: 2px;
+    border-radius: 5px;
+  }
+
+  .ant-card:hover {
+    box-shadow: inset 0 0 0 2px #168be5, 0 0 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .ant-card-head {
+    border-bottom: none;
+    font-weight: 300;
+    font-size: 22px;
+  }
+
+  .ant-card-body {
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 120%;
+  }
+
+  .ant-card-actions > li {
+    width: auto;
+
+  }
+
+  .ant-card-actions {
+    margin: 2px;
+    text-align: center;
+  }
+
+  .ant-card-actions li {
+    margin: 2px;
+    text-align: center;
+  }
+
+  .repoCardAddr {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 400;
+  }
+
+  .ant-card-head-title {
+    font-family: 'Roboto Slab', sans-serif;
+    font-weight: 400;
+  }
+  .ant-tag {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+  }
+
+  strong {
+    font-weight: 700;
+  }
+
+  .mono-inline {
+    font-family: "Roboto Mono", monospace;
+  }
+
+  .disabled-input-emph {
+    color: #168be5 !important;
+    cursor: text !important;
+  }
+
+  .ant-form-explain {
+    font-size: 90%;
+  }
+
+</style>

@@ -197,9 +197,9 @@
                         pathElems.push("")
                         this.pathElems = pathElems
                         this.dataFilename = this.getDataFilename()
-                        this.dataViewAddr = repoAddr + "blob/master/" + this.dataFilename
-                        this.dataEditAddr = repoAddr + "edit/master/" + this.dataFilename
-                        this.dataCommitsAddr = repoAddr + "commits/master/" + this.dataFilename
+                        this.dataViewAddr = repoAddr + "blob/main/" + this.dataFilename
+                        this.dataEditAddr = repoAddr + "edit/main/" + this.dataFilename
+                        this.dataCommitsAddr = repoAddr + "commits/main/" + this.dataFilename
                     })
                 } catch (e) {}
                 this.loading = false

@@ -1,6 +1,6 @@
 <template>
   <div id="logo">
-    <a href="/">r<span id="logoSpan">efto.dev</span></a>
+    <a href="/">refto.dev</a>
   </div>
 </template>
 
@@ -10,23 +10,14 @@
 
 <style>
   #logo a {
-    color: #ececec;
+    color: rgb(38, 57, 76);
     font-size: 50px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    font-family: "Roboto Slab", sans-serif;
   }
-
-  @media only screen and (max-width: 1000px) {
-    #logo a {
-      width: 80px;
-      font-size: 30px;
-    }
-  }
-
-  @media only screen and (max-width: 700px) {
-    #logoSpan {
-      display: none;
-    }
-    #logo a {
-      font-size: 50px;
-    }
+  #logo a:hover {
+    letter-spacing: -2px;
+    color: #61CEFFDB;
   }
 </style>

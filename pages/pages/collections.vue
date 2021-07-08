@@ -34,7 +34,7 @@
           <a @click="editCollection(elem)">Edit</a>
           <a-divider type="vertical" />
           <a-popconfirm
-            title="Are you sure wnat to delete this collection? This action cannot be undone."
+            title="Are you sure want to delete this collection? This action cannot be undone."
             ok-text="Yes"
             cancel-text="No"
             @confirm="deleteCollection(elem.id)"

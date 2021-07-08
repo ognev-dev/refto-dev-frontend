@@ -43,10 +43,10 @@ echo "Making archive..."
 tar -czf refto-frontend.tar.gz ./dist
 
 echo "Uploading archive..."
-scp refto-frontend.tar.gz ${remoteUser}@${remoreAddr}:~/
+scp refto-frontend.tar.gz "${remoteUser}@${remoreAddr}":~/
 
 echo "Connecting to remote..."
-ssh -T ${remoteUser}@${remoreAddr} << EOF
+ssh -T "${remoteUser}@${remoreAddr}" << EOF
 echo "Preparing..."
 rm -rf ~/frontend-release-tmp || exit
 mkdir ~/frontend-release-tmp || exit
