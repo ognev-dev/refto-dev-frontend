@@ -28,7 +28,7 @@
               label-in-value
               :value="selectedTopics"
               :loading="loading"
-              placeholder="Select topic..."
+              placeholder="Select topic of interest..."
               @change="handleTopicChange"
               @search="handleTopicSearch"
               :token-separators="[',']"
@@ -102,19 +102,20 @@
         <a-row :gutter="16" type="flex" align="top" v-masonry transition-duration="1s" item-selector=".masonryCard">
           <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="8" v-masonry-tile class="masonryCard" v-if="showWelcomeText">
             <a-card id="intro">
-              <p><b>Welcome to refto.dev</b> - a collection of awesome creations that is useful to software developers.
-                The <a href="https://github.com/refto/data" target="_blank">data source is stored on GitHub</a> and
-                anyone is welcome to contribute.
-              </p>
+              <h2>Welcome to refto.dev</h2>
+              <p>It's a service that transpiles awesome data from GitHub's repositories into friendly representation</p>
               <ul>
                 <li>
-                  <a-icon type="github"/>
-                  <a href="https://github.com/refto/data" target="_blank">Data source</a></li>
+                  <i class="fas fa-list"></i>
+                  <a href="https://github.com/refto/data">Explore repositories (FIX)</a></li>
                 <li>
-                  <a-icon type="github"/>
+                  <a-icon type="question" />
+                  <a href="https://github.com/refto/data#how-it-works" target="_blank">How it works (FIX)</a></li>
+                <li>
+                  <i class="fab fa-github"></i>
                   <a href="https://github.com/refto/frontend" target="_blank">Frontend source</a></li>
                 <li>
-                  <a-icon type="github"/>
+                  <i class="fab fa-github"></i>
                   <a href="https://github.com/refto/server" target="_blank">Server source</a></li>
               </ul>
             </a-card>
@@ -128,10 +129,9 @@
                 </a>
                 <span v-else> <a-icon :type="getIcon(d)"/> {{d.data.title}}</span>
               </span>
-
               <a slot="extra" v-if="d.data.home_addr != null" :href="d.data.home_addr"
                  :title="'Link to ' + d.data.title" target="_blank">
-                <a-icon type="link"/>
+                <i class="fas fa-external-link-alt"></i>
               </a>
               <div v-if="d.data.topics != null && topicsDiff(d.data.topics).length > 0" slot="actions">
                 <a-button v-for="(t, i) in topicsDiff(d.data.topics)" @click="addTopic(t)" :key="i"
@@ -140,22 +140,6 @@
                 </a-button>
               </div>
               <component v-bind:is="components[d.type]" :data="d.data"></component>
-            </a-card>
-          </a-col>
-          <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="8" v-masonry-tile class="masonryCard" v-if="showNotSatisfiedText">
-            <a-card id="outro">
-              <div slot="title">
-                <a-icon type="thunderbolt"/>
-                Not satisfied?
-              </div>
-              <a-avatar shape="square"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfULlhWZCclULsqfSiaUl5uwYNefsF45MEMesbKVZN6_5dQLxjuQ&s"/>
-              <p>If you'll find that is something missing here or not correct - feel free to <a
-                href="https://github.com/refto/data#how-to-contribute" target="_blank">fix it by yourself</a>.</p>
-              <p>To busy to contribute? Simply <a href="https://github.com/refto/data/issues/new" target="_blank">open
-                an issue</a> about what need to be fixed, we'll take care of it.</p>
-
-              <p>Thank you!</p>
             </a-card>
           </a-col>
         </a-row>
@@ -596,13 +580,13 @@
             getCardClass(d) {
                 // make definitions stand out a bit
                 if (d.type === 'definition') {
-                    return 'definition-card'
+                    return 'entity-card definition-card'
                 }
                 if (d.type === 'definition-rel') {
-                    return 'definition-rel-card'
+                    return 'entity-card definition-rel-card'
                 }
 
-                return ''
+                return 'entity-card'
             },
 
             logout() {
@@ -674,9 +658,6 @@
             showWelcomeText: function () {
                 return this.col.id == 0 && this.selectedTopics.length < 1 && this.searchVal == '' && this.data.length !== 0
             },
-            showNotSatisfiedText: function () {
-                return this.col.id == 0 && this.data.length >= this.totalCount && !this.loading && this.data.length != 0
-            },
             showYouGotNothing: function () {
                 return !this.loading && this.col.id == 0 && this.data.length == 0 && (this.selectedTopics.length > 0 || this.searchVal != '')
             },
@@ -709,13 +690,17 @@
     height: initial;
   }
 
-
-
   #intro {
     padding: 20px;
     background: #168be5;
-    color: #c6d6ff;
     box-shadow: none;
+    font-size: 110%;
+  }
+  #intro h2{
+    font-family: "Roboto Slab", sans-serif;
+  }
+  #intro * {
+    color: #dff2ff;
   }
 
   #intro-help {
@@ -733,22 +718,21 @@
   }
 
   #intro a {
-    color: white;
     text-decoration: underline;
   }
 
   #intro a:hover {
-    color: #02e8ff;
-    text-decoration: underline;
+    color: #ffffff;
+    text-decoration: none;
   }
 
   #intro ul {
     margin: 0;
+    padding: 0;
   }
 
   #intro ul li {
     list-style: none;
-    font-size: 16px;
   }
 
   .add-topic-btn {
@@ -756,8 +740,6 @@
     border-radius: 0;
     padding: 0 7px;
   }
-
-
 
   #notContentPic {
     float: left;
@@ -767,7 +749,6 @@
     width: 200px;
     height: initial;
   }
-
 
   #contributePic {
     float: right;
@@ -802,8 +783,8 @@
     box-shadow: inset 0 0 0 2px #168be5, 0 0 8px rgba(0, 0, 0, 0.2);
   }
 
-  .ant-card-extra {
-    font-size: 20px;
+  .entity-card .ant-card-extra {
+    font-size: 16px;
   }
 
   .pageHeader {

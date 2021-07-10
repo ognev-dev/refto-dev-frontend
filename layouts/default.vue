@@ -81,7 +81,7 @@
   .ant-card-body {
     padding-top: 0;
     padding-bottom: 0;
-    font-size: 120%;
+    /*font-size: 120%;*/
   }
 
   .ant-card-actions > li {
@@ -107,6 +107,7 @@
   .ant-card-head-title {
     font-family: 'Roboto Slab', sans-serif;
     font-weight: 400;
+    font-size: 20px;
   }
   .ant-tag {
     font-family: 'Roboto', sans-serif;

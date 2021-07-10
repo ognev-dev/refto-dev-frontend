@@ -10,7 +10,7 @@
 
 <style>
   #logo a {
-    color: rgb(38, 57, 76);
+    color: rgb(50, 74, 98);
     font-size: 50px;
     font-weight: 700;
     letter-spacing: -2px;

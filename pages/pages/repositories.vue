@@ -14,7 +14,7 @@
       <a-row>
         <a-col :span="18"><h1>My repositories</h1></a-col>
         <a-col :span="6">
-          <a-button type="primary" icon="plus" style="float: right" @click="showCreateForm">
+          <a-button type="primary" icon="plus" style="float: right" @click="showCreateForm" v-if="this.hasData()">
             Add repository
           </a-button>
         </a-col>
@@ -22,7 +22,7 @@
       <a-row>
         <a-card v-for="(el, i) in this.data">
           <a slot="title">
-            {{ el.name }}
+            {{ getRepoName(el) }}
             <a-tag class="repoCardTitleTag" :color="getTypeColor(el.type)">
               <a-icon :type="getTypeIcon(el.type)"/>
               {{ el.type }}
@@ -44,9 +44,8 @@
               </a-tooltip>
             </a>
             <a-divider type="vertical"/>
-
             <a-popconfirm
-              title="Current secret will no longer will be valid if you'll make new one"
+              title="If you request new secret, the current one will no longer be valid"
               ok-text="Proceed"
               placement="leftTop"
               @confirm="handleNewSecret(el)"
@@ -61,7 +60,6 @@
             </a>
             </a-popconfirm>
             <a-divider type="vertical"/>
-
             <a-popconfirm
               title="This action cannot be undone and all data related to this repo will deleted for good"
               ok-text="Proceed"
@@ -79,13 +77,19 @@
               </a>
             </a-popconfirm>
           </div>
+          <p>{{ el.description }}</p>
+          <p class="import-status" v-html="getImportStatus(el)"></p>
 
-          {{ el.description }}
         </a-card>
+        <template v-if="!this.hasData()">
+          <p>You don't have repositories yet</p>
+          <a-button type="primary" icon="plus" @click="showCreateForm" size="large">
+            Add repository
+          </a-button>
+        </template>
       </a-row>
     </a-layout-content>
     <Footer/>
-
     <a-modal v-model="createFormModal">
       <span slot="title"><a-icon type="plus"></a-icon> Add repository</span>
       <CreateForm ref="createForm"/>
@@ -156,6 +160,7 @@ import Logo from "@/components/Logo";
 import CreateForm from "@/components/repositories/CreateForm";
 import UpdateForm from "@/components/repositories/UpdateForm";
 import Vue from 'vue'
+import moment from 'moment'
 
 export default {
   data() {
@@ -361,6 +366,36 @@ export default {
       this.newSecret = ""
       this.newSecretRepo = ""
     },
+    hasData() {
+      if  (!this.data) {
+        return false
+      }
+
+      return this.data.length > 0
+    },
+    getImportStatus(el) {
+      let err = ""
+      let status = '<i class="fas fa-check-circle"></i> ' + el.import_log
+      if (el.import_status === 'error') {
+        err = el.import_log
+        status = '<span style="color:red"><i class="fas fa-exclamation-triangle"></i> Import failed</span>'
+      }
+
+      let log = 'Last import at: '+ moment(el.import_at).calendar() +' <div role="separator" class="ant-divider ant-divider-vertical"></div> ' + status
+
+      if (err !== "") {
+        log += "<br>" + '<span style="color:red">&gt; ' + err + "</span>"
+      }
+
+      return log
+    },
+    getRepoName(el) {
+      if (el.name === "") {
+        return el.path
+      }
+
+      return el.name
+    },
   },
 
   watch: {},
@@ -371,5 +406,9 @@ export default {
 <style>
 .repoCardTitleTag {
   font-size: 13px;
+}
+.import-status {
+  font-family: "Roboto Mono", monospace;
+  font-size: 80%;
 }
 </style>
