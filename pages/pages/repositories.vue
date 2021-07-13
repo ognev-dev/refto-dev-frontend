@@ -77,8 +77,8 @@
               </a>
             </a-popconfirm>
           </div>
-          <p>{{ el.description }}</p>
-          <p class="import-status" v-html="getImportStatus(el)"></p>
+          <p v-if="el.description !== ''">{{ el.description }}</p>
+          <p v-if="el.import_at != null" class="import-status" v-html="getImportStatus(el)"></p>
 
         </a-card>
         <template v-if="!this.hasData()">
@@ -116,39 +116,33 @@
       </template>
     </a-modal>
 
-    <a-modal v-model="newSecretModal" centered okText="OK" :cancelButtonProps="{style: {'display': 'none'}}"
-             @ok="newSecretModal=false" :afterClose="handleNewSecretModalClose">
+    <a-modal v-model="secret.modal" centered okText="OK" :cancelButtonProps="{style: {'display': 'none'}}"
+             @ok="secret.modal=false" :afterClose="handleNewSecretModalClose" :maskClosable="false">
       <span slot="title"><a-icon type="safety-certificate"></a-icon> Repo's secret</span>
       <p>Repository's secret is:
-        <a-input class="mono-inline disabled-input-emph" :value="newSecret" :disabled="true"
+        <a-input class="mono-inline disabled-input-emph" :value="this.secret.secret" :disabled="true"
                  style="font-size:200%; padding: 20px"></a-input></p>
 
-      <div style="font-size: 80%">
-      <p>To sync data from Github to refto.dev you should add webhook to your
-        repository on GitHub. To do so just follow this steps:</p>
-      <ol>
-        <li>Visit <a :href="newWebhookAdd(this.newSecretRepo)" target="_blank" class="mono-inline">{{
-            newWebhookAdd(this.newSecretRepo)
-          }}</a> to add new webhook for <span class="mono-inline"> <a-icon type="github"></a-icon> {{
-            this.newSecretRepo
-          }}</span>. You'll see a form for adding new webhook for this repository. You'd have to configure only 3 first
-          inputs:
+      <div style="font-size: 90%">
+      <p>To sync data from Github to refto.dev you need to add webhook to your
+        repository on GitHub</p>
+        <p>Just visit <i class="fab fa-github"></i> <a :href="this.secret.webhook_url" target="_blank" class="mono-inline">{{
+            this.secret.webhook_url.replace("https://github.com/", "")
+          }}</a>. You'll see a form for adding new webhook for <span class="mono-inline"> <i class="fab fa-github"></i> {{
+            this.secret.repo
+          }}</span>. You need to configure only 3 first inputs: </p>
           <ol>
             <li>For <strong>Payload URL</strong> enter
-              <a-input class="mono-inline disabled-input-emph" value="https://refto.dev/api/hooks/data-pushed/"
-                       :disabled="true"  size="small"  style="font-size: 100%"></a-input>
+              <a-input class="mono-inline disabled-input-emph" :value="this.secret.payload_url"
+                       :disabled="true"  style="font-size: 100%"></a-input>
             <li>For <strong>Content type</strong> select <span class="mono-inline">application/json</span></li>
             <li>For <strong>Secret</strong> enter
-              <a-input class="mono-inline disabled-input-emph" :value="newSecret" :disabled="true"
-                       size="small"  style="font-size: 100%"></a-input>
+              <a-input class="mono-inline disabled-input-emph" :value="this.secret.secret" :disabled="true"
+                       style="font-size: 100%"></a-input>
             </li>
-          </ol>
-        </li>
-        <li>After you have added your webhook, push something to your repository to trigger it. refto.dev's server will
-          receive information about your repository along with <strong>secret</strong> you set, if it is correct, your
-          repository will be marked as confirmed and will by synced everytime you'll push something to it.
-        </li>
-      </ol>
+        </ol>
+        <p>Keep everything else as-is and submit the form, once you do, Github will let us know you've set up the webhook. We'll try to import this repository for first time and will do so everytime you'll push something to it.</p>
+
       </div>
     </a-modal>
   </a-layout>
@@ -170,8 +164,13 @@ export default {
       createFormModal: false,
       updateFormModal: false,
       newSecretModal: false,
-      newSecret: "a1b2c3",
-      newSecretRepo: "",
+      secret: {
+        modal: false,
+        secret: "",
+        repo: "",
+        payload_url: "",
+        webhook_url: "",
+      },
       data: [],
       page: 1,
       dataCount: 0,
@@ -278,9 +277,7 @@ export default {
         this.loading = true
 
         this.$axios.$request({method: "POST", url: "/repositories/", data: values}).then((resp) => {
-          this.newSecretModal = true
-          this.newSecret = resp.secret
-          this.newSecretRepo = values.path
+          this.fillSecretFromResponse(resp)
           this.loadData()
         })
         this.loading = false
@@ -313,12 +310,20 @@ export default {
       this.loading = true
 
       this.$axios.$request({method: "POST", url: "/repositories/" + elem.id + "/secret/"}).then((resp) => {
-        this.newSecretModal = true
-        this.newSecret = resp.secret
-        this.newSecretRepo = elem.path
+        this.fillSecretFromResponse(resp)
         this.loadData()
       })
       this.loading = false
+    },
+
+    fillSecretFromResponse(resp) {
+      this.secret = {
+        modal: true,
+        secret: resp.webhook_secret,
+        repo: resp.repo_path,
+        payload_url: resp.webhook_payload_url,
+        webhook_url: resp.webhook_create_url,
+      }
     },
 
     handleCancelCreateRepository() {
@@ -358,12 +363,14 @@ export default {
     getConfirmedColor(v) {
       return v ? 'green' : 'red'
     },
-    newWebhookAdd(repo) {
-      repo = repo.replace(/^\/|\/$/g, '');
-      return "https://github.com/" + repo + "/settings/hooks/new"
-    },
     handleNewSecretModalClose() {
-      this.newSecret = ""
+      this.secret = {
+        modal: false,
+        secret: "",
+        repo: "",
+        payload_url: "",
+        webhook_url: "",
+      }
       this.newSecretRepo = ""
     },
     hasData() {
@@ -373,7 +380,11 @@ export default {
 
       return this.data.length > 0
     },
+
     getImportStatus(el) {
+      if (el.import_at == null) {
+        return ""
+      }
       let err = ""
       let status = '<i class="fas fa-check-circle"></i> ' + el.import_log
       if (el.import_status === 'error') {
@@ -389,6 +400,7 @@ export default {
 
       return log
     },
+
     getRepoName(el) {
       if (el.name === "") {
         return el.path
